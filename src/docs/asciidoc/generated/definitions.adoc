@@ -1,0 +1,26 @@
+
+[[_definitions]]
+== Definitions
+
+[[_base_user_information]]
+=== base user information
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**address** +
+__optional__|地址|string
+|**age** +
+__optional__|年龄 +
+**Minimum value** : `1` +
+**Maximum value** : `150`|integer (int32)
+|**email** +
+__optional__|邮箱 +
+**Pattern** : `"^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$"`|string
+|**name** +
+__optional__|姓名 +
+**Length** : `0 - 20`|string
+|===
+
+
+
