@@ -2,9 +2,11 @@ package com.umpaytest.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import javax.validation.constraints.*;
 
@@ -16,8 +18,11 @@ import javax.validation.constraints.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)    // 链式编程
 @ApiModel("base user information")
 public class User {
+    @ApiModelProperty("主键")
+    private Integer id;
 
     @ApiModelProperty("姓名")
     @Size(max = 20)

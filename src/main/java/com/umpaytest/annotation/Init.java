@@ -8,7 +8,7 @@ import java.lang.annotation.*;
  * @description:
  */
 @Documented
-@Inherited
+@Inherited // 允许子类继承父类的注解。
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Init {
