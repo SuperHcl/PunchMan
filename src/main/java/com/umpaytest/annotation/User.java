@@ -1,6 +1,7 @@
 package com.umpaytest.annotation;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * @author: Hucl
@@ -10,7 +11,7 @@ import lombok.Data;
 @Data
 public class User {
 
-
+    @Value(value = "aasd")
     private String name;
 
     private String address;
