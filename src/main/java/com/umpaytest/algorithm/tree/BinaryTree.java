@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author: Hucl
@@ -67,7 +66,7 @@ public class BinaryTree {
 
     /**
      * 前序遍历 栈实现
-     *
+     * 根 左 右
      * @param node 二叉树
      */
     public static void preOrderTraversalWithStack(TreeNode node) {
@@ -88,7 +87,7 @@ public class BinaryTree {
 
     /**
      * 中序遍历 左 中 右
-     *
+     * 栈实现
      * @param node 二叉树根节点
      */
     public static void inOrderTraversalWithStack(TreeNode node) {
@@ -103,6 +102,33 @@ public class BinaryTree {
                 p = stack.pop();
                 System.out.println(p.data);
                 p = p.rightChild;
+            }
+        }
+    }
+
+    /**
+     * 后序遍历 左 右 中
+     * 栈实现
+     * @param root 二叉树根节点
+     */
+    public static void postOrderTraversalWithStack(TreeNode root) {
+
+        TreeNode cur, pre = null;
+
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+
+        while (!stack.empty()) {
+            cur = stack.peek();
+            if ((cur.leftChild == null && cur.rightChild == null) || (pre != null && (pre == cur.leftChild || pre == cur.rightChild))) {
+                System.out.print(cur.data + "->");
+                stack.pop();
+                pre = cur;
+            } else {
+                if (cur.rightChild != null)
+                    stack.push(cur.rightChild);
+                if (cur.leftChild != null)
+                    stack.push(cur.leftChild);
             }
         }
     }
@@ -136,7 +162,11 @@ public class BinaryTree {
 //        postOrderTraversal(binaryTree);
 //        preOrderTraversalWithStack(binaryTree);
 //        levelOrderTraversal(binaryTree);
-        inOrderTraversalWithStack(binaryTree);
+//        inOrderTraversalWithStack(binaryTree);
+        postOrderTraversalWithStack(binaryTree);
+
+//        String a = "heloowosubgs";
+//        System.out.println(a.indexOf("loo"));
     }
 
 
