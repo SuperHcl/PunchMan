@@ -1,5 +1,9 @@
 package com.umpaytest.algorithm.tree;
 
+
+import java.util.Arrays;
+import java.util.LinkedList;
+
 /**
  * @author: Hucl
  * @date: 2019/12/13 16:03
@@ -8,7 +12,7 @@ package com.umpaytest.algorithm.tree;
  * 右子树中的每个节点都要大于该节点
  */
 public class BinarySearchTree {
-    private Node tree;
+    private TreeNode tree;
 
     /**
      * 查找
@@ -19,8 +23,8 @@ public class BinarySearchTree {
      * @param searchData search data
      * @return 节点
      */
-    public Node find(int searchData) {
-        Node p = tree;
+    public TreeNode find(int searchData) {
+        TreeNode p = tree;
 
         while (p != null) {
             if (p.data < searchData) {
@@ -36,16 +40,16 @@ public class BinarySearchTree {
 
     public void insert(int insertedData) {
         if (tree == null) {
-            tree = new Node(insertedData);
+            tree = new TreeNode(insertedData);
             return;
         }
-        Node p = tree;
+        TreeNode p = tree;
 
-        while (p!=null) {
+        while (p != null) {
             // left tree
             if (p.data > insertedData) {
                 if (p.leftTree == null) {
-                    p.leftTree = new Node(insertedData);
+                    p.leftTree = new TreeNode(insertedData);
                     return;
                 } else {
                     p = p.leftTree;
@@ -53,7 +57,7 @@ public class BinarySearchTree {
             } else {
                 // <= ,遍历右子树
                 if (p.rightTree == null) {
-                    p.rightTree = new Node(insertedData);
+                    p.rightTree = new TreeNode(insertedData);
                     return;
                 } else {
                     p = p.rightTree;
@@ -62,13 +66,95 @@ public class BinarySearchTree {
         }
     }
 
-    static class Node {
-        private int data;
-        private Node leftTree;
-        private Node rightTree;
+    /**
+     * 删除指定的数，有三种情况
+     * 1. 删除的数据是叶子节点。 只需要将父节点指向该要删除的节点的指针置为null就行了
+     * 2. 删除的数据是只有一个子节点（左子节点或右子节点），这种情况下只需要更新父节点中，指向要删除节点的指针
+     * 让它指向要删除的子节点就行了
+     * 3. 删除的数据有两个子节点。先找到这个节点的右子树中的最小叶子节点，把他替换到要删除的节点上。然后删除
+     * 这个最小叶子节点，
+     *
+     * @param data
+     */
+    public void delete(int data) {
+        TreeNode p = tree;
+        // 要删除节点的父节点
+        TreeNode pp = null;
 
-        public Node(int data) {
+        while (p != null && p.data != data) {
+            pp = p;
+            if (data > p.data)
+                p = p.rightTree;
+            else
+                p = p.leftTree;
+        }
+        if (p == null) return;
+        // 要删除的节点有两个子节点
+        if (p.leftTree != null && p.rightTree != null) { // 查找右子树中最小节点
+            TreeNode minP = p.rightTree;
+            TreeNode minPP = p; // minPP表示minP的父节点
+            while (minP.leftTree != null) {
+                minPP = minP;
+                minP = minP.leftTree;
+            }
+            p.data = minP.data; // 将minP的数据替换到p中
+            p = minP; // 下面就变成了删除minP了
+            pp = minPP;
+        }
+
+        TreeNode child;
+        if (p.leftTree != null) {
+            child = p.leftTree;
+        } else if (p.rightTree != null) {
+            child = p.rightTree;
+        } else {
+            child = null;
+        }
+        if (pp == null) tree = child; // 删除的是根节点
+        else if (pp.leftTree == p) pp.leftTree = child;
+        else pp.rightTree = child;
+    }
+
+    public TreeNode createBinaryTree(LinkedList<Integer> linkedList) {
+        TreeNode tree = null;
+
+        if (linkedList == null || linkedList.isEmpty()) return null;
+        Integer data = linkedList.removeFirst();
+        if (data != null) {
+            tree = new TreeNode(data);
+            tree.leftTree = createBinaryTree(linkedList);
+            tree.rightTree = createBinaryTree(linkedList);
+        }
+        return tree;
+    }
+
+    public static void main(String[] args) {
+        BinarySearchTree st = new BinarySearchTree();
+        LinkedList<Integer> integers = new LinkedList<>(Arrays.asList(33, 16, 13, null, 15, null, null, 18, 17, null, null,
+                25, 19, null, null, 27, null, null, 50, 34, null, null, 58, 51, null, 55, null, null, 66, null, null));
+        st.tree = st.createBinaryTree(integers);
+        st.delete(19);
+
+        System.out.println(st.tree.toString());
+
+    }
+
+    private static class TreeNode {
+        private int data;
+        private TreeNode leftTree;
+        private TreeNode rightTree;
+
+        public TreeNode(int data) {
             this.data = data;
+        }
+
+        @Override
+        public String toString() {
+            return "TreeNode{" +
+                    "data=" + data +
+                    ", leftTree=" + leftTree +
+                    ", rightTree=" + rightTree +
+                    '}';
         }
     }
 }
