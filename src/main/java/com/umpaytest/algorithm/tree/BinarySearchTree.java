@@ -115,6 +115,38 @@ public class BinarySearchTree {
         else pp.rightTree = child;
     }
 
+    /**
+     * 查询最大的节点值
+     * @return Min Tree Node
+     */
+    public TreeNode findMax() {
+        if (tree == null) return null;
+        TreeNode p = tree;
+
+        while (p.rightTree!=null) {
+            p = p.rightTree;
+        }
+        return p;
+    }
+
+    /**
+     * 查询最小的节点值
+     * @return Max Tree Node
+     */
+    public TreeNode findMin() {
+        if (tree == null) return null;
+        TreeNode p = tree;
+        while (p.leftTree!=null) {
+            p = p.leftTree;
+        }
+        return p;
+    }
+
+    /**
+     * 创建二叉树
+     * @param linkedList {@link LinkedList}
+     * @return Tree
+     */
     public TreeNode createBinaryTree(LinkedList<Integer> linkedList) {
         TreeNode tree = null;
 
@@ -133,9 +165,12 @@ public class BinarySearchTree {
         LinkedList<Integer> integers = new LinkedList<>(Arrays.asList(33, 16, 13, null, 15, null, null, 18, 17, null, null,
                 25, 19, null, null, 27, null, null, 50, 34, null, null, 58, 51, null, 55, null, null, 66, null, null));
         st.tree = st.createBinaryTree(integers);
-        st.delete(19);
-
-        System.out.println(st.tree.toString());
+//        st.delete(19);
+//        System.out.println(st.tree.toString());
+        TreeNode maxNode = st.findMax();
+        System.out.println(maxNode.data);
+        TreeNode minNode = st.findMin();
+        System.out.println(minNode.data);
 
     }
 
