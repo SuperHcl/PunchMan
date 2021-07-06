@@ -129,7 +129,7 @@ public class LinkedListAlgo {
 //        SinglyLinkedList.Node deletedList = deleteLastKth(nodeList.head, 2);
 //        nodeList.printAll(deletedList);
         SinglyLinkedList.Node node = deleteLastNNode(nodeList.head, 1);
-        nodeList.printAll(node);
+        nodeList.printAll();
     }
 
 

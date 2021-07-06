@@ -37,14 +37,6 @@
             <version>1.7.1.RELEASE</version>
         </dependency>
 
-        <!--lombok-->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.16</version>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>io.github.swagger2markup</groupId>
             <artifactId>swagger2markup</artifactId>
@@ -55,11 +47,6 @@
             <groupId>com.baidu.aip</groupId>
             <artifactId>java-sdk</artifactId>
             <version>4.11.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.umpay.dps.model</groupId>
-            <artifactId>dps-model-guazi</artifactId>
-            <version>0.0.3</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/dom4j/dom4j -->

@@ -7,7 +7,7 @@ package com.umpaytest.algorithm.linkedList;
  * @description: 单链表
  */
 public class SinglyLinkedList {
-    private Node head = null;
+    public Node head = null;
 
 
     public void insertAfter(int value) {
@@ -50,7 +50,7 @@ public class SinglyLinkedList {
     public static class Node {
         private int data;
 
-        private Node next;
+        public Node next;
 
         public Node(int data, Node next) {
             this.data = data;

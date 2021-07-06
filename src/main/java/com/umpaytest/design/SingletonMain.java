@@ -12,7 +12,7 @@ public class SingletonMain {
         HungryType hungryType = HungryType.getInstance();
         hungryType.say();
 
-        EnumSingleton enumSingleton = EnumSingleton.getInstance();
+        EnumSingleton enumSingleton = EnumSingleton.INSTANCE;
         enumSingleton.say();
 
         InnerClassType innerClassType = InnerClassType.getInstance();
