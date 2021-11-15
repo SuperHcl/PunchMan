@@ -84,6 +84,171 @@ public class LambdaThreadDemo {
                     return f;
                 });
         System.out.println(then_compose_async.join());
+    }
 
+
+    @Test
+    public void test_multi_process() {
+        /*
+         * 并行
+         * | TaskA |-------
+         *                 | ----> | TaskC |
+         * | TaskB |-------
+         */
+        // 1. 两个completableFuture执行完，然后执行action，不依赖两个任务的执行结果，无返回值
+        // 第一个异步任务
+        CompletableFuture<String> taskA = CompletableFuture.completedFuture("TaskA");
+        // 第二个
+        CompletableFuture.supplyAsync(() -> "TaskB")
+                // 两个都执行完后，再执行action
+                .runAfterBothAsync(taskA, () -> System.out.println("runAfterBothAsync() is Ok"));
+
+        // 2. 两个completableFuture并行执行完，然后执行action，依赖两个任务的执行结果，无返回值
+        CompletableFuture.supplyAsync(() -> "thenAcceptBothAsync() ...")
+                .thenAcceptBothAsync(taskA, (task_b, task_a) -> {
+                    System.out.println(task_a);
+                    System.out.println(task_b);
+                });
+
+        // 3. 两个completableFuture并行执行完，然后执行fn，依赖上两个任务的执行结果，有返回值
+        CompletableFuture<String> combineAsync = CompletableFuture.supplyAsync(() -> "thenCombineAsync() ...")
+                .thenCombineAsync(taskA, (b, a) -> {
+                    System.out.println(b);
+                    return "combine async...";
+                });
+        System.out.println(combineAsync.join());
+    }
+
+    @Test
+    public void test_any_task_run() {
+        /*
+         * 线程并行执行，谁先执行完则触发一下任务（两者选其最快）
+         */
+        // 1. 上一个任务或者other任务完成, 运行action，不依赖前一任务的结果，无返回值
+        CompletableFuture<String> firstTask = CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("first task running...");
+            return "first task";
+        });
+        CompletableFuture
+                .supplyAsync(() -> {
+                    System.out.println("runAfterEitherAsync() second task running...");
+                    return "second task";
+                })
+                .runAfterEitherAsync(firstTask, () -> System.out.println("runDone"));
+
+        // 2. 上一个任务或者other任务完成, 运行action，依赖最先完成任务的结果，无返回值
+        CompletableFuture.supplyAsync(() -> {
+            System.out.println("acceptEitherAsync() second task running...");
+            return "acceptEitherAsync";
+        }).acceptEitherAsync(firstTask, System.out::println);
+
+        // 3. 上一个任务或者other任务完成, 运行fn，依赖最先完成任务的结果，有返回值
+        CompletableFuture<String> applyToEitherAsync = CompletableFuture.supplyAsync(() -> {
+            System.out.println("applyToEitherAsync() second task running");
+            return "applyToEitherAsync";
+        }).applyToEitherAsync(firstTask, (data) -> {
+            System.out.println(data);
+            return "applyToEitherAsync method return";
+        });
+
+        System.out.println(applyToEitherAsync.join());
+    }
+
+    @Test
+    public void test_exceptional_handle() throws ExecutionException, InterruptedException {
+        /*
+         * 异常处理
+         */
+        // 1. exceptionally
+        CompletableFuture<Integer> exceptionally = CompletableFuture.supplyAsync(() -> {
+            // 模拟异常
+            System.out.println(1 / 0);
+            return 22;
+        }).thenApply(data -> data + 1)
+                // 异常处理，前两块异常都能处理，supplyAsync & thenApply
+                .exceptionally(e -> {
+                    System.out.println(e);
+                    return 0;
+                });
+        System.out.println(exceptionally.get());
+
+        // 2. handle-任务完成或者异常时运行fn，返回值为fn的返回
+        CompletableFuture<Integer> custom_exception = CompletableFuture.supplyAsync(() -> {
+            if (true) {
+//                throw new RuntimeException("custom exception");
+            }
+            return 11;
+        }).thenApply(data -> data * 6)
+                .handleAsync((data, e) -> {
+                    // 异常信息不会在外层暴露
+                    System.out.println("异常信息=" + e);
+                    // 如果有异常，最终返回的结果是0，int
+                    return data;
+                });
+        System.out.println(custom_exception.join());
+    }
+
+    @Test
+    public void test_exception_whenComplete() {
+        /*
+         * whenComplete() 处理异常
+         * 异常信息在whenComplete()处理过后，还会暴露到外层
+         * 并且没有返回值
+         */
+        CompletableFuture<Integer> integerCompletableFuture = CompletableFuture.supplyAsync(() -> {
+//            System.out.println(1 / 0);
+            return 99;
+        }).thenApply(data -> data / 2)
+                .whenComplete((data, e) -> {
+                    if (e != null) {
+                        System.out.println("异常信息--" + e);
+                    }
+                });
+
+        System.out.println(integerCompletableFuture.join());
+    }
+
+    @Test
+    public void test_multi_task_composite_allOf() {
+        /*
+         * 多任务组合
+         * allOf 所有
+         * anyOf 任意
+         */
+
+        CompletableFuture<Void> task_one = CompletableFuture.runAsync(() -> System.out.println("all of task one"));
+        CompletableFuture<String> task_two = CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("all of task two");return "all of task two";
+        });
+        // 全部任务完成
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(task_one, task_two);
+        System.out.println(allOf.join());
+
+    }
+
+    @Test
+    public void test_multi_task_composite_anyOf() {
+        CompletableFuture<Void> task_one = CompletableFuture.runAsync(() -> System.out.println("any of task one"));
+        CompletableFuture<String> task_two = CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("any of task two");return "any of task two";
+        });
+        // 任意一个执行完就可
+        CompletableFuture<Object> anyOf = CompletableFuture.anyOf(task_one, task_two);
+        System.out.println(anyOf.join());
     }
 }
