@@ -1,13 +1,12 @@
 package com.umpaytest.controller;
 
+import com.umpaytest.annotation.Params;
 import com.umpaytest.annotation.Superman;
 import com.umpaytest.property.PropertySourceValueDemo;
 import com.umpaytest.property.ReadByPropertySourceAndConfProperties;
 import com.umpaytest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -15,7 +14,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/hello")
 public class HelloController {
-//    @Autowired
+    //    @Autowired
 //    private UserService userService1;
 //
     @Autowired
@@ -46,6 +45,16 @@ public class HelloController {
     @GetMapping("/propertySourceByConfPro")
     public String propertySourceByConfPro() {
         return confProperties.toString();
+    }
+
+    @GetMapping("/requestParamTest")
+    public String requestParamTest(@Params(value = "name", notEmpty = true, required = true, defaultValue = "Lisa") String name) {
+        return "requestParamTest's name = " + name;
+    }
+
+    @GetMapping("/requestParamTest2")
+    public String requestParamTest2(@Params(notEmpty = true, required = true, defaultValue = "Lisa") String name) {
+        return "requestParamTest2's name = " + name;
     }
 
 
