@@ -7,6 +7,12 @@ package com.umpaytest.springProxy.reflect;
  */
 public class ReflectDemo {
 
+    public String name;
+
+    public ReflectDemo(String name) {
+        this.name = name;
+    }
+
     public String selectOne(String id) {
         return "J " + id;
     }
