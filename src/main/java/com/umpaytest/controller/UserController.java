@@ -3,7 +3,6 @@ package com.umpaytest.controller;
 import com.umpaytest.annotation.Superman;
 import com.umpaytest.entity.User;
 import com.umpaytest.service.UserService;
-import com.umpaytest.service.impl.UserServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -59,6 +58,18 @@ public class UserController {
         result.add(new User(3,"ccc",30,"深圳","ccc@qq.com"));
         result.add(new User(4,"ddd",43,"郑州","ddd@qq.com"));
         return result;
+    }
+
+    @GetMapping("/listPage")
+    public User listPage(@Valid User user) {
+        System.out.println(user.toString());
+        return user;
+    }
+
+    @PostMapping("/listPage/post")
+    public User listPagePost(@RequestBody @Valid User user) {
+        System.out.println(user.toString());
+        return user;
     }
 
     @ApiIgnore

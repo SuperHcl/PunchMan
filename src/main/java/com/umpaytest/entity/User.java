@@ -2,13 +2,17 @@ package com.umpaytest.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 
 /**
  * @author: Hucl
@@ -22,6 +26,7 @@ import javax.validation.constraints.*;
 @ApiModel("base user information")
 public class User {
     @ApiModelProperty("主键")
+    @NotNull(message = "id not null")
     private Integer id;
 
     @ApiModelProperty("姓名")
@@ -41,10 +46,4 @@ public class User {
     @Pattern(regexp = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")
     private String email;
 
-//    public User(String name, Integer age, String address, String email) {
-//        this.name = name;
-//        this.age = age;
-//        this.address = address;
-//        this.email = email;
-//    }
 }
