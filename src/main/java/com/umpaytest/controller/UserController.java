@@ -3,16 +3,16 @@ package com.umpaytest.controller;
 import com.umpaytest.annotation.Superman;
 import com.umpaytest.entity.User;
 import com.umpaytest.service.UserService;
+import com.umpaytest.service.impl.UserServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author: Hucl
@@ -24,8 +24,10 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService2;
+    @Resource
+    private UserService userServiceImpl;
+    @Resource
+    private UserService UserServiceImpl1;
 
 //    @Autowired
 //    public UserController(UserServiceImpl userService) {
@@ -47,18 +49,6 @@ public class UserController {
         return user;
     }
 
-    @ApiOperation("用户列表")
-    @GetMapping("/users")
-    @Superman
-    public List<User> list(@ApiParam("查看第几页") @RequestParam int pageIndex,
-                           @ApiParam("每页多少条") @RequestParam int size) {
-        List<User> result = new ArrayList<>(2);
-        result.add(new User(1,"aaa",52,"广州","aaa@qq.com"));
-        result.add(new User(2,"bbb",23,"上海","bbb.@umfintech.com"));
-        result.add(new User(3,"ccc",30,"深圳","ccc@qq.com"));
-        result.add(new User(4,"ddd",43,"郑州","ddd@qq.com"));
-        return result;
-    }
 
     @GetMapping("/listPage")
     public User listPage(@Valid User user) {
@@ -66,8 +56,8 @@ public class UserController {
         return user;
     }
 
-    @PostMapping("/listPage/post")
-    public User listPagePost(@RequestBody @Valid User user) {
+    @DeleteMapping("/listPage/post")
+    public User listPagePost(@RequestBody @Validated User user) {
         System.out.println(user.toString());
         return user;
     }
@@ -81,7 +71,10 @@ public class UserController {
 
 
     @GetMapping("/doSomething")
-    public String doSomething() {
-        return userService2.doSomething(" Jack");
+    public String doSomething(@RequestParam(value = "type", defaultValue = "1") Integer type) {
+        String s = UserServiceImpl1.doSomething("ahahs" + type);
+        System.out.println(s);
+
+        return userServiceImpl.doSomething(" Jack" + type);
     }
 }

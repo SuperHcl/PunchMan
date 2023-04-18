@@ -12,7 +12,7 @@ public class Test {
     private String attribute;
     private String method;
     private static Test test = null;
-    private Test(){}
+    public Test(){}
 
     public Test(String attribute, String method) {
         this.attribute = attribute;

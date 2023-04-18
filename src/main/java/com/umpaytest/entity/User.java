@@ -9,9 +9,11 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 
 /**
@@ -36,14 +38,24 @@ public class User {
     @ApiModelProperty("年龄")
     @Max(150)
     @Min(1)
-    private Integer age;
+    private int age;
 
     @ApiModelProperty("地址")
-    @NotNull
+    @NotEmpty(message = "地址不能为空")
     private String address;
+
+    @NotNull(message = "monty not empty")
+    private Integer money;
 
     @ApiModelProperty("邮箱")
     @Pattern(regexp = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")
     private String email;
+
+    private List<Integer> ossServerId;
+
+    public User(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
 }

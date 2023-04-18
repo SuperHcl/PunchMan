@@ -1,5 +1,6 @@
 package com.umpaytest.mq.delay;
 
+import javax.validation.constraints.NotNull;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +25,7 @@ public class DelayedTask implements Delayed {
     }
 
     @Override
-    public int compareTo(Delayed o) {
+    public int compareTo(@NotNull Delayed o) {
         if (o == this) {
             return 0;
         }
