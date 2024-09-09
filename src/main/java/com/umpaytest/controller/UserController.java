@@ -1,12 +1,11 @@
 package com.umpaytest.controller;
 
 import com.umpaytest.annotation.Superman;
+import com.umpaytest.entity.Student;
 import com.umpaytest.entity.User;
 import com.umpaytest.service.UserService;
-import com.umpaytest.service.impl.UserServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -34,6 +33,10 @@ public class UserController {
 //        this.userService = userService;
 //    }
 
+    @PostMapping("/test")
+    public Object test(@RequestBody Student student) {
+        return student;
+    }
 
     @ApiOperation("创建用户")
     @PostMapping("/users")
@@ -71,10 +74,7 @@ public class UserController {
 
 
     @GetMapping("/doSomething")
-    public String doSomething(@RequestParam(value = "type", defaultValue = "1") Integer type) {
-        String s = UserServiceImpl1.doSomething("ahahs" + type);
-        System.out.println(s);
-
-        return userServiceImpl.doSomething(" Jack" + type);
+    public String doSomething(@RequestParam @Validated Integer number) {
+        return String.valueOf(number);
     }
 }

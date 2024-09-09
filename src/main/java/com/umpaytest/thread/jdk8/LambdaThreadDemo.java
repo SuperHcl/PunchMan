@@ -1,5 +1,6 @@
 package com.umpaytest.thread.jdk8;
 
+
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;

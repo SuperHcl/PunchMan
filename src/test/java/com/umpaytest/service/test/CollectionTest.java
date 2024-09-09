@@ -1,35 +1,38 @@
 package com.umpaytest.service.test;
 
-import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.codec.Base32;
 import cn.hutool.core.date.DateField;
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import com.umpaytest.entity.MeteringUsageItemEntity;
-import com.umpaytest.entity.MonitorK8sPodEsModel;
-import com.umpaytest.entity.TestBean;
+
+import com.google.common.collect.Sets;
 import com.umpaytest.entity.User;
 import com.umpaytest.util.TimeUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import javax.validation.constraints.NotEmpty;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DateFormat;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -40,10 +43,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Hu.ChangLiang
@@ -227,17 +235,8 @@ public class CollectionTest {
         map.put("b", 2);
         map.put("c", 3);
 
-        Integer d = map.get("d");
-        System.out.println(d);
-
-        Integer c = map.remove("d");
-        System.out.println(c);
-
-        System.out.println(map);
-
-        String str = String.format("122, %s, %d", "aa", 88);
-        System.out.println(str);
-
+        Integer a = map.putIfAbsent("a", 4);
+        System.out.println(a);
     }
 
     @Test
@@ -271,15 +270,19 @@ public class CollectionTest {
 
         List<User> users = Arrays.asList(u1, u2, u3, u4);
         System.out.println(users);
-    }
 
-    @Test
-    public void test_17() {
-        TestBean testBean = new TestBean();
-        System.out.println(testBean);
-
-        MonitorK8sPodEsModel monitorK8sPodEsModel = new MonitorK8sPodEsModel();
-        System.out.println(monitorK8sPodEsModel);
+        String collect = users.stream().map(user -> {
+                    StringBuilder message = new StringBuilder();
+                    if (3 == user.getId()) {
+                        message.append("user id ").append(3).append(" =3;");
+                    }
+                    if ("小黑".equals(user.getName())) {
+                        message.append("user name ").append(user.getName()).append(" 是小黑;");
+                    }
+                    return message.toString();
+                })
+                .collect(Collectors.joining());
+        System.out.println(collect);
     }
 
     @Test
@@ -363,6 +366,7 @@ public class CollectionTest {
 
         System.out.println(meteringStartTime);
     }
+
     @Test
     public void test_24() {
         User u1 = new User(3, "小红");
@@ -398,11 +402,297 @@ public class CollectionTest {
     public static String aa() {
         do {
             for (int i = 0; i < 5; i++) {
-                if (i==2) {
+                if (i == 2) {
                     return "ssa";
                 }
             }
-        }while (true);
+        } while (true);
+    }
+
+    @Test
+    public void test_26() {
+//        String s = "am9obg==";
+        String s = "5bCP6I235bCW5bCW8J+Yjg==";
+        byte[] decode = Base64.getDecoder().decode(s);
+//        byte[] decode = Base64Utils.decode(s.getBytes(StandardCharsets.UTF_8));
+        String s1 = new String(decode);
+        System.out.println(s1);
+    }
+
+    @Test
+    public void test_27() {
+        BigDecimal cent = new BigDecimal(6010456);
+        String a = cent.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP).toString();
+        System.out.println(a);
+    }
+
+    @Test
+    public void test_28() {
+//        long t  = 1711587092841L;
+        long t = 1711592635181L;
+        // 转换为Instant对象
+        Instant instant = Instant.ofEpochMilli(t);
+
+        // 设置时区为中国标准时间（东八区，即北京时间）
+        ZoneId zoneId = ZoneId.systemDefault();
+
+        // 将Instant转换为特定时区的ZonedDateTime对象
+        ZonedDateTime dateTime = instant.atZone(zoneId);
+
+        // 定义日期时间格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // 输出格式化后的日期时间字符串
+        String formattedDateTime = dateTime.format(formatter);
+        System.out.println(formattedDateTime);
+    }
+
+    @Test
+    public void test_29() {
+        Date date = new Date();
+        String format = String.format("%s:%s:%d:%d", date, null, 1L, 2L);
+        String encode = Base32.encode(format.getBytes(StandardCharsets.UTF_8));
+        byte[] decode = Base32.decode("IZZGSICNMFZCAMBREAYDOORUHA5DCNBAINJVIIBSGAZDIOSNN5XCATLBOIQDENJAGA3TUNBYHIYTIICDKNKCAMRQGI2DU3TVNRWDU3TVNRWA");
+        System.out.println(format);
+        System.out.println(encode);
+        System.out.println(new String(decode));
+    }
+
+    @Test
+    public void test_30() {
+        List<String> reservationDates = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        int nonSundayCount = 0;
+
+        // 设置初始日期为订单支付时间次日
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+        // 寻找并添加3个连续的非周日日期
+        while (nonSundayCount < 3) {
+            if (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+                String format = DateUtil.format(calendar.getTime(), DatePattern.NORM_DATE_PATTERN);
+                reservationDates.add(format);
+                nonSundayCount++;
+            }
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        System.out.println(reservationDates);
+    }
+
+    @Test
+    public void test_31() throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date payTime = simpleDateFormat.parse("2024-05-14 00:00:00");
+        Date now = simpleDateFormat.parse("2024-05-15 15:19:00");
+        List<String> reservationDates = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        int nonSundayCount = 0;
+
+        // 设置初始日期为订单支付时间次日
+        calendar.setTime(payTime);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+        // 寻找并添加3个连续的非周日日期
+        while (nonSundayCount < 3) {
+            if (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+                Date time = calendar.getTime();
+                if (DateUtil.isSameDay(time, now) || time.after(now)) {
+                    String format = DateUtil.format(calendar.getTime(), DatePattern.NORM_DATE_PATTERN);
+                    reservationDates.add(format);
+                }
+                nonSundayCount++;
+            }
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        System.out.println(reservationDates);
+    }
+
+    @Test
+    public void test_32() {
+        List<String> l = new ArrayList<>();
+        l.add("1L");
+        l.add("2L");
+        l.add("3L");
+        List<String> collect = l.stream().filter(s -> s.equals("1L")).collect(Collectors.toList());
+        System.out.println(collect);
+
+        for (String aLong : l) {
+            HashSet<String> tempSet = Sets.newHashSet(StringUtils.split(aLong, ","));
+            System.out.println(tempSet);
+        }
+    }
+
+    @Test
+    public void test_33() {
+        List<User> userList = new ArrayList<>();
+        User u = new User();
+        u.setId(1);
+        u.setAge(10);
+        u.setName("ajs");
+
+        User u1 = new User();
+        u1.setAge(12);
+        u1.setName("wew1");
+
+        User u2 = new User();
+        u2.setId(null);
+        u2.setAge(8);
+        u2.setName("wew");
+
+        User u3 = new User();
+        u3.setId(2);
+        u3.setAge(6);
+        u3.setName("wew");
+
+        userList.add(u);
+        userList.add(u1);
+        userList.add(u2);
+        userList.add(u3);
+
+        Map<String, Map<Integer, User>> collect = userList.stream().collect(Collectors.groupingBy(User::getName, Collectors.toMap(
+                        User::getId,
+                        e -> e, (e1, e2) -> e1
+                ))
+        );
+
+        System.out.println(collect);
+    }
+
+    private static void print(Integer i) {
+        System.out.println(Objects.isNull(i));
+        System.out.println(i);
+    }
+
+    @Test
+    public void test_34() {
+//        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Bangkok"));
+        LocalDateTime now = LocalDateTime.of(2023, 1, 1, 0, 0);
+        System.out.println(now);
+        // 获取当天00:00的LocalDateTime
+        LocalDateTime startOfInterval = LocalDateTime.of(now.toLocalDate(), LocalTime.of(0, 0));
+        // 获取当天00:10的LocalDateTime
+        LocalDateTime endOfInterval = LocalDateTime.of(now.toLocalDate(), LocalTime.of(0, 10));
+
+        System.out.println(startOfInterval);
+        System.out.println(endOfInterval);
+        System.out.println("------------------");
+
+        System.out.println(now.isAfter(startOfInterval));
+
+        String format = String.format("You can only make an appointment to pick up the goods %d hours later.", 3);
+        System.out.println(format);
+    }
+
+    @Test
+    public void test_35() {
+        String pickupDate = "2024-05-15";
+        String pickupHour = "22:10-23:00";
+        LocalDateTime localDateTime = LocalDateTime.now();
+        boolean b;
+        try {
+            String puStartTime = pickupHour.split("-")[0];
+            LocalDateTime pickupDateTime = DateUtil.parseLocalDateTime(String.format("%s %s", pickupDate, puStartTime), DatePattern.NORM_DATETIME_MINUTE_PATTERN);
+            b = pickupDateTime.isAfter(localDateTime.plusHours(3));
+        } catch (Exception e) {
+
+            b = false;
+        }
+        System.out.println(b);
+    }
+
+    @Test
+    public void test_36() {
+        List<String> orderCodes = new ArrayList<>();
+        orderCodes.add("OGVN2024061400023");
+        Map<String, Object> mapc = new HashMap<>();
+        mapc.put("orderCodes", orderCodes);
+        mapc.put("orgId", 1);
+        mapc.put("statusFlag", "1");
+        System.out.println(JSON.toJSONString(mapc));
+
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("uid", -1);
+        map1.put("zoneId", "Asia/Ho_Chi_Minh");
+        map1.put("orgId", 1);
+
+        map.put("traceContext", JSON.toJSONString(map1));
+
+        System.out.println(JSON.toJSONString(map));
+    }
+
+    @Test
+    public void test_37() {
+        Map<String, String> map1 = new HashMap<>();
+        Map<String, String> map2 = new HashMap<>();
+
+        map1.putAll(map2);
+        System.out.println(map1.size());
+        System.out.println(map1);
+    }
+
+
+    @Test
+    public void test_38() {
+        JSONObject json = new JSONObject();
+        json.put("key1", "C:\\Users\\20573\\Desktop\\电子发票.pdf");
+        System.out.println(json.toJSONString());
+    }
+
+    @Test
+    public void test_39() {
+        long utcTimestamp = System.currentTimeMillis();
+        Date date = new Date(utcTimestamp);
+        System.out.println("UTC timestamp: " + utcTimestamp);
+        System.out.println("Local time:     " + date.toString());
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        System.out.println("UTC formatted:  " + formatter.format(date));
+    }
+
+    @Test
+    public void test_40() {
+        String regex = "^([01]?[0-9]|2[0-3]):00-([01]?[0-9]|2[0-3]):00$";
+        Pattern pattern = Pattern.compile(regex);
+
+        // 测试数据
+        String[] testStrings = {"10:00-11:00", "00:00-23:00", "12:00-12:00", "23:00-00:00", "10:15-11:00", "10:00-11"};
+
+        for (String s : testStrings) {
+            Matcher matcher = pattern.matcher(s);
+            boolean isValid = matcher.matches();
+            System.out.println("Testing: " + s + ", Valid: " + isValid);
+        }
+    }
+
+    @Test
+    public void test_41() {
+        String appointmentDay = "2024-01-01";
+        String appointmentHour = "09:00-10:00";
+
+        // 格式化 appointmentDay
+        DateTimeFormatter formatterDay = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(appointmentDay, formatterDay);
+
+        // 格式化 appointmentHour
+        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime startTime = LocalTime.parse(appointmentHour.split("-")[0], formatterHour);
+        LocalTime endTime = LocalTime.parse(appointmentHour.split("-")[1], formatterHour);
+
+        // 将日期和时间转换为所需的格式
+        String formattedDate = date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String formattedStartTime = startTime.format(DateTimeFormatter.ofPattern("hhmm"));
+        String formattedEndTime = endTime.format(DateTimeFormatter.ofPattern("hhmm"));
+
+        String s = formattedDate + formattedStartTime + "_" + formattedEndTime;
+        System.out.println(s);
+    }
+
+    @Test
+    public void test_42() {
     }
 
 }
