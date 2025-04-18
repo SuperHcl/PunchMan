@@ -7,10 +7,12 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.joekerouac.common.tools.constant.StringConst;
 import com.google.common.collect.Lists;
 
 import com.google.common.collect.Sets;
 import com.umpaytest.entity.User;
+import com.umpaytest.entity.VideoEntity;
 import com.umpaytest.util.TimeUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +36,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -46,6 +50,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -237,6 +242,9 @@ public class CollectionTest {
 
         Integer a = map.putIfAbsent("a", 4);
         System.out.println(a);
+
+        map.put(null, 5);
+        System.out.println(JSON.toJSONString(map));
     }
 
     @Test
@@ -693,6 +701,73 @@ public class CollectionTest {
 
     @Test
     public void test_42() {
+        Clock clock = Clock.systemDefaultZone();
+        LocalTime SOA_CHECK_TIME = LocalTime.of(1, 0, 0);
+        LocalDate now = LocalDate.now(clock);
+        // 当天的对账任务在第二天执行
+        LocalDate runDate = now.plus(1, ChronoUnit.DAYS);
+        LocalDateTime execTime = runDate.atTime(SOA_CHECK_TIME);
+        System.out.println(execTime);
+    }
+
+    @Test
+    public void test_43() {
+        String SPLIT = new String(new byte[]{0x03}, StandardCharsets.UTF_8);
+        String nextLine = "\u0003\u0003\u0003\u0003\u0003\u00031835845530228383746\u0003\u0003\u00031835845530228383746\u00030\u0003\u0003484200\u00030\u0003\u0003false\u0003\u00030\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003";
+        String[] split = nextLine.split(SPLIT, -1);
+
+        System.out.println(split);
+    }
+
+    @Test
+    public void test_44() {
+        String originalFilename = "百度一下.pdf";
+        String suffix = originalFilename.substring(0, originalFilename.lastIndexOf(StringConst.DOT));
+        System.out.println(suffix);
+        String s = "IdWorker.getIdStr()" + StringConst.DOT + suffix;
+        System.out.println(s);
+        System.out.println(s.equalsIgnoreCase(null));
+    }
+
+    @Test
+    public void test_45() {
+        List<String> strings = Arrays.asList("1", "2", "3", "1");
+        Set<String> set = new HashSet<>();
+        for (String s : strings) {
+            boolean add = set.add(s);
+            System.out.println(s + "--" + add);
+        }
+    }
+
+    @Test
+    public void test_46() {
+        double showTime = 3.001;
+        // 上报时长的处理系数 101=百分之1
+        int showTimeFactor = 101;
+
+        // 将 showTimeFactor 转换为小数（例如 101 转换为 1.01）
+        double factor = showTimeFactor / 100.0;
+
+        // 计算处理后的时长
+        double v = showTime * factor;
+        BigDecimal bigDecimal = new BigDecimal(v).setScale(3, RoundingMode.HALF_UP);
+
+        System.out.println(showTime * factor);
+        System.out.println(bigDecimal.doubleValue());
+    }
+
+    @Test
+    public void test_47() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // 获取当前时间
+        LocalDateTime now = LocalDateTime.now();
+        // 获取当前时间的前一年时间
+        LocalDateTime oneYearAgo = now.minusYears(1);
+        String createDateStart = oneYearAgo.format(formatter);
+        String createDateEnd = now.format(formatter);
+
+        System.out.println(createDateStart);
+        System.out.println(createDateEnd);
     }
 
 }

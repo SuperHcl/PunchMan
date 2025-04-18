@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.mail.MessagingException;
 import java.util.Map;
 
 @RestController
@@ -25,9 +26,7 @@ public class HelloController {
 
     @Resource
     private ReadByPropertySourceAndConfProperties confProperties;
-//    public HelloController(UserServiceImpl userService) {
-//        this.userService = userService;
-//    }
+
 
     @GetMapping("/test")
     @Superman(methodName = "helloWorld")
@@ -57,5 +56,9 @@ public class HelloController {
         return "requestParamTest2's name = " + name;
     }
 
+    @GetMapping("/sendMail")
+    public String sendMail() throws MessagingException {
+        return "mail send success";
+    }
 
 }
