@@ -30,14 +30,19 @@
             <scope>test</scope>
         </dependency>
 
-        <!--springboot 整合 swagger2-->
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!--springboot 整合 swagger2-->
+        <!--<dependency>
             <groupId>com.spring4all</groupId>
             <artifactId>swagger-spring-boot-starter</artifactId>
             <version>1.7.1.RELEASE</version>
-        </dependency>
+        </dependency>-->
 
-        <dependency>
+        <!--<dependency>
             <groupId>io.github.swagger2markup</groupId>
             <artifactId>swagger2markup</artifactId>
             <version>1.3.1</version>
@@ -63,7 +68,7 @@
                     <groupId>io.swagger</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
         <!--baidu sdk-->
         <dependency>
             <groupId>com.baidu.aip</groupId>
@@ -85,10 +90,10 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml -->
-        <dependency>
+        <!--<dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -129,7 +134,7 @@
             <version>5.6.5</version>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-elasticsearch</artifactId>
             <exclusions>
@@ -138,7 +143,7 @@
                     <groupId>net.sf.jopt-simple</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>com.baomidou</groupId>

@@ -25,6 +25,8 @@ public class Student {
     @DecimalMin(value = "0.0", inclusive = false, message = "挂账金额必须大于0")
     private BigDecimal amount;
 
+    private BigDecimal testBigDecimal;
+
     @NotBlank(message = "供货仓编码")
     @Size(max = 20, message = "供货仓编码不能超过200个字符")
     private String storeCode;

@@ -7,6 +7,7 @@ import com.umpaytest.property.ReadByPropertySourceAndConfProperties;
 import com.umpaytest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
@@ -31,7 +32,7 @@ public class HelloController {
     @GetMapping("/test")
     @Superman(methodName = "helloWorld")
     public String helloWorld() {
-        System.out.println(userServiceMap.get("userService1").doSomething("test"));
+        System.out.println(userServiceMap.get("userServiceImpl").doSomething("test"));
         System.out.println("sout test");
         return "";
     }
@@ -56,9 +57,14 @@ public class HelloController {
         return "requestParamTest2's name = " + name;
     }
 
-    @GetMapping("/sendMail")
-    public String sendMail() throws MessagingException {
+    @GetMapping(value = "/sendMail", produces = "application/json;charset=UTF-8")
+    public String sendMail() {
         return "mail send success";
+    }
+
+    @GetMapping("/testSimple")
+    public String testSimple() {
+        return "simple test";
     }
 
 }

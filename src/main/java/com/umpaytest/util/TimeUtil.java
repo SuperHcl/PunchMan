@@ -1,6 +1,5 @@
 package com.umpaytest.util;
 
-import org.joda.time.DateTime;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -68,10 +67,6 @@ public class TimeUtil {
         return format.format(calendar.getTime());
     }
 
-    public static Date addDateHours(Date date, int hours) {
-        DateTime dateTime = new DateTime(date);
-        return dateTime.plusHours(hours).toDate();
-    }
 
     public static String format(Date date, String pattern) {
         if (date != null) {

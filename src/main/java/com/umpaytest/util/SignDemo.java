@@ -1,7 +1,6 @@
 package com.umpaytest.util;
 
 import com.google.gson.Gson;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -339,19 +338,15 @@ public class SignDemo {
 
     @Data
     static class RequestForm {
-        @ApiModelProperty(value = "时间戳", required = true)
         @NotNull(message = "时间戳不能为空")
         private Long t;
 
-        @ApiModelProperty(value = "签名", required = true)
         @NotBlank(message = "签名不能为空")
         private String sign;
 
-        @ApiModelProperty(value = "appId", required = true)
         @NotBlank(message = "appId不能为空")
         private String appId;
 
-        @ApiModelProperty(value = "请求体(业务参数json串)", required = true)
         @NotBlank(message = "requestBody不能为空")
         private String requestBody;
 

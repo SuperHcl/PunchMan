@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
+import java.util.Random;
 
 /**
  * 非对称加密算法 RAS的公钥、私钥生成器
@@ -13,6 +14,9 @@ import java.util.Base64;
  * @date 2025/4/11 10:09
  */
 public class RSAKeyPairGenerator {
+    private static final String ALPHA_NUMERIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final Random random = new Random();
+
     public static void main(String[] args) throws Exception {
         // 生成密钥对
         KeyPair keyPair = generateKeyPair();
@@ -28,6 +32,20 @@ public class RSAKeyPairGenerator {
         byte[] publicKeyBytes = publicKey.getEncoded();
         String publicKeyBase64 = Base64.getEncoder().encodeToString(publicKeyBytes);
         System.out.println("Public Key (Base64): " + publicKeyBase64);
+
+        // 生成随机字符串
+        String randomString = generateRandomString(32);
+        System.out.println("Random String: " + randomString);
+        System.out.println("a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6".length());
+    }
+
+    public static String generateRandomString(int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(ALPHA_NUMERIC.length());
+            sb.append(ALPHA_NUMERIC.charAt(index));
+        }
+        return sb.toString();
     }
 
     public static KeyPair generateKeyPair() throws NoSuchAlgorithmException {

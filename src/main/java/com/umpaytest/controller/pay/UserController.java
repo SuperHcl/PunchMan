@@ -1,4 +1,4 @@
-package com.umpaytest.controller;
+package com.umpaytest.controller.pay;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
@@ -8,12 +8,9 @@ import com.umpaytest.entity.Student;
 import com.umpaytest.entity.User;
 import com.umpaytest.firebase.FirebaseContext;
 import com.umpaytest.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.json.JSONObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -23,7 +20,6 @@ import javax.validation.Valid;
  * @date: 2019/3/26 10:08
  * @description:
  */
-@Api(tags = "用户管理")
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -43,17 +39,17 @@ public class UserController {
         return student;
     }
 
-    @ApiOperation("创建用户")
     @PostMapping("/users")
     public User create(@RequestBody @Valid User user) {
         return user;
     }
 
-    @ApiOperation("用户详情")
     @GetMapping("/users/{id}")
     public User findById(@PathVariable Integer id) {
         User user = new User();
         user.setName("JJ Lin").setAge(21).setAddress("Beijing").setEmail("157@163.com").setId(id);
+        String s = userServiceImpl.doSomething("JJ Lin");
+        user.setName(s);
         return user;
     }
 
@@ -70,7 +66,6 @@ public class UserController {
         return user;
     }
 
-    @ApiIgnore
     @DeleteMapping("/users/{id}")
     @Superman
     public String deleteById(@PathVariable Long id) {

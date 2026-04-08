@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class DataLoader {
 
     @EventListener(ApplicationReadyEvent.class)
-    @Order(1)
+//    @Order(3)
     public void loadData() {
         System.out.println("在应用完全启动后，开始加载数据...2");
     }
